@@ -1,5 +1,13 @@
-function accel = calcAcceleration(frustration)
+function accel = calcAcceleration(frustration,curSpeed,desiredSpeed,followingDistance)
+decelerationConstant = -.5;
+minFollowingDistance = 2;
 
-accel = frustration;
+if curSpeed >= desiredSpeed
+    accel = 0;
+elseif followingDistance <= minFollowingDistance
+    accel = decelerationConstant;
+else
+    accel = frustration;
+end
 
 end

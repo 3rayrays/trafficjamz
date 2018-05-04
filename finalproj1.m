@@ -16,19 +16,26 @@ numIterations = simLength / dt;
 car = struct('index',[],'desiredSpeed',[],'frustration',[],'acceleration',[],'position',[],'speed',[]);
 
 %% model constants
-deceleration.constant = -.5;
+decelerationConstant = -.5;
+minFollowingDistance = 2;
 
 %% model anonymous functions
 
 %% initialize a car
 car(1) = initializeCar(1);
-
+% current position of car 1 is: index 1, position, lane 1.
+currentPositions = [1 car(1).position(1) 1];
 %% simulation loop
 for n=2:(numIterations+1)
+    if size(currentPositions,1)==1
+        followingDistance=100;
+    end
     car(1).speed(n) = car(1).speed(n-1) + car(1).acceleration * dt;
     car(1).position(n) = car(1).position(n-1) + car(1).speed(n-1) * dt;
-    car(1).frustration(n) = (car(1).speed(n-1)<car(1).desiredSpeed)* car(1).frustration(n-1);
-    car(1).acceleration = calcAcceleration(car(1).frustration(n));
+    car(1).frustration(n) = ...
+        (car(1).speed(n-1)<car(1).desiredSpeed)* car(1).frustration(n-1);
+    car(1).acceleration = calcAcceleration(car(1).frustration(n), ...
+        car(1).speed(n),car(1).desiredSpeed, followingDistance);
 end
 
 %% visualize
@@ -64,6 +71,6 @@ for idx = 1:nImages
     if idx == 1
         imwrite(A,map,filename,'gif','LoopCount',Inf,'DelayTime',.5);
     else
-        imwrite(A,map,filename,'gif','WriteMode','append','DelayTime',.1);
+        imwrite(A,map,filename,'gif','WriteMode','append','DelayTime',.05);
     end
 end
