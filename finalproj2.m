@@ -8,7 +8,7 @@
 %% simulation constants
 dt = 0.25;
 % simulation length
-simLength = 15;
+simLength = 20;
 % numIterations
 numIterations = simLength / dt;
 
@@ -32,17 +32,26 @@ for n=2:(numIterations+1)
     t(n) = t(n-1) + dt;
     if size(currentPositions,1)==1
         followingDistance=100;
+    else followingDistance=[followingDistance; ...
+            car(1).position(n) - car(2).position(n)]
     end
     if t==1
         car(2) = initializeCar(2);
         currentPositions = [currentPositions; 2 car(2).position(1) 1];
+    elseif t>1
+        car(2).speed(n) = car(2).speed(n-1)+car(2).acceleration*dt;
+        car(2).position(n) = car(2).position(n-1)+car(2).speed(n-1)*dt;
+        car(2).frustration(n) = ...
+            (car(2).speed(n-1)<car(2).desiredSpeed)*car(2).frustration(n-1);
+        car(2).acceleration = calcAcceleration(car(2).frustration(n),...
+            car(2).speed(n),car(2).desiredSpeed,followingDistance(2));
     end
     car(1).speed(n) = car(1).speed(n-1) + car(1).acceleration * dt;
     car(1).position(n) = car(1).position(n-1) + car(1).speed(n-1) * dt;
     car(1).frustration(n) = ...
         (car(1).speed(n-1)<car(1).desiredSpeed)* car(1).frustration(n-1);
     car(1).acceleration = calcAcceleration(car(1).frustration(n), ...
-        car(1).speed(n),car(1).desiredSpeed, followingDistance);
+        car(1).speed(n),car(1).desiredSpeed, followingDistance(1));
 end
 
 %% visualize
@@ -55,6 +64,7 @@ midroad(1:roadLength+1) = 3;
 %%
 n = car(1).position;
 nImages = length(n);
+m = car(2).position;
 
 fig = figure;
 for idx = 1:nImages
@@ -62,6 +72,7 @@ for idx = 1:nImages
     road1=plot(road,toproad,'black');
     road2=plot(road,bottomroad,'black');
     carposn=scatter(n(idx), 3,100,'filled','s','blue');
+    carposn2=scatter(m(idx),3,100,'filled','s','green');
     hold off;
     ylim([0 7]);
     xlim([0 roadLength]);
