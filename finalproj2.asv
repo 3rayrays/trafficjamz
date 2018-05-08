@@ -46,8 +46,7 @@ for n=2:(numIterations+1)
         (car(index).speed(end)<car(index).desiredSpeed)* car(index).frustration(end);
     car(index).acceleration = calcAcceleration(car(index).frustration(end), ...
         car(index).speed(end),car(index).desiredSpeed, followingDistance);
-    % set the current position of the car in the currentPositions matrix
-    % equal to the current position of the car.
+    % 
     currentPositions(currentPositions(1,:)==index,2)=car(index).position(end);
 end
 
