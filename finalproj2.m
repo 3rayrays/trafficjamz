@@ -25,28 +25,28 @@ roadLength = 100;
 % simulation loop
 for n=2:(numIterations+1)
     if n==2
-        m=2;
+        %m=2;
         index=1;
         % initialize the first car
         car(index) = initializeCar(index);
         % current position of car 1 is: index 1, position, lane 1.
-        currentPositions = [index car(index).position(m-1) 1];
-    elseif (car(index).position(m)>= roadLength)
+        currentPositions = [index car(index).position(end) 1];
+    elseif (car(index).position(end)>= roadLength)
         index=index+1;    
         car(index) = initializeCar(index);
-        m = 2;
+        %m = 2;
     else
-        m = m + 1;
+        %m = m + 1;
     end
     if size(currentPositions,1)==1
         followingDistance=100;
     end
-    car(index).speed(m) = car(index).speed(m-1) + car(index).acceleration * dt;
-    car(index).position(m) = car(index).position(m-1) + car(index).speed(m-1) * dt;
-    car(index).frustration(m) = ...
-        (car(index).speed(m-1)<car(index).desiredSpeed)* car(index).frustration(m-1);
-    car(index).acceleration = calcAcceleration(car(index).frustration(m), ...
-        car(index).speed(m),car(index).desiredSpeed, followingDistance);
+    car(index).speed(end+1) = car(index).speed(end) + car(index).acceleration * dt;
+    car(index).position(end+1) = car(index).position(end) + car(index).speed(end) * dt;
+    car(index).frustration(end+1) = ...
+        (car(index).speed(end)<car(index).desiredSpeed)* car(index).frustration(end);
+    car(index).acceleration = calcAcceleration(car(index).frustration(end), ...
+        car(index).speed(end),car(index).desiredSpeed, followingDistance);
 end
 
 %% visualize
