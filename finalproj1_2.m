@@ -71,7 +71,7 @@ for cr = 1:length(b)
         road2=plot(road,bottomroad,'black');
         carposn=scatter(b{cr}(idx), 3,100,'filled','s','blue');
         hold off;
-        ylim([0 7]);
+        ylim([-5 11]);
         xlim([0 roadLength]);
         drawnow
         frame = getframe(fig);
