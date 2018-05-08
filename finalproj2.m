@@ -11,9 +11,11 @@ dt = 0.25;
 simLength = 100;
 % numIterations
 numIterations = simLength / dt;
+% initialize time
+t = 0;
 
 % car struct definition 
-car = struct('index',[],'desiredSpeed',[],'frustration',[],'acceleration',[],'position',[],'speed',[]);
+car = struct('index',[],'desiredSpeed',[],'frustration',[],'acceleration',[],'position',[],'speed',[],'time',[]);
 
 % model constants
 decelerationConstant = -.5;
@@ -24,23 +26,18 @@ roadLength = 100;
 
 % simulation loop
 for n=2:(numIterations+1)
+    t(n) = t(n-1) + dt;
     if n==2
-        %m=2;
         index=1;
         % initialize the first car
-        car(index) = initializeCar(index);
+        car(index) = initializeCar(index,t(n));
         % current position of car 1 is: index 1, position, lane 1.
         currentPositions = [index car(index).position(end) 1];
     elseif (car(index).position(end)>= roadLength)
         index=index+1;    
-        car(index) = initializeCar(index);
-        %m = 2;
-    else
-        %m = m + 1;
+        car(index) = initializeCar(index, t(n));
     end
-    if size(currentPositions,1)==1
-        followingDistance=100;
-    end
+    car(index).time(end+1) = t(n);
     car(index).speed(end+1) = car(index).speed(end) + car(index).acceleration * dt;
     car(index).position(end+1) = car(index).position(end) + car(index).speed(end) * dt;
     car(index).frustration(end+1) = ...
