@@ -1,10 +1,8 @@
-%% floor: model one car on a single-lane road
-% there is nothing for the car to respond to, so it is going a constant
-% speed, although speed is already being governed by rules that the driver
-% will follow in the presence of other cars. when the car reaches the end
-% of the finite road, a new car is launched at the start of the road, so
-% that density of cars is constant over time.
-
+%% floor: model two cars on a single-lane road
+% add in another car, so there are two cars on the road at once. the front
+% car has a lower desired speed than the following car, which may result
+% in increasing frustration of the following car and perhaps honking. or,
+% the following car may be patient enough so that it will not honk.
 %% simulation constants
 dt = 0.25;
 % simulation length
@@ -55,7 +53,7 @@ for n=2:(numIterations+1)
 end
 
 %% visualize
-roadLength = 16;
+roadLength = 100;
 road = 0:1:roadLength;
 toproad(1:roadLength+1) = 4;
 bottomroad(1:roadLength+1) = 2;

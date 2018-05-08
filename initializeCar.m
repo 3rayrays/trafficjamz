@@ -1,6 +1,6 @@
 function car = initializeCar(index)
 
-initializeDesiredSpeed = @() 1 + rand * 1;
+initializeDesiredSpeed = @() 40 + rand * 60;
 initializeFrustration = @() rand;
 
 car(index).index = index;

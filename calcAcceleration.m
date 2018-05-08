@@ -7,7 +7,7 @@ if curSpeed >= desiredSpeed
 elseif followingDistance <= minFollowingDistance
     accel = decelerationConstant;
 else
-    accel = frustration;
+    accel = frustration*5;
 end
 
 end

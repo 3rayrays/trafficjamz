@@ -22,17 +22,17 @@ roadLength = 100;
 
 %% model anonymous functions
 
-%% initialize a car
-car(1) = initializeCar(1);
-% current position of car 1 is: index 1, position, lane 1.
-currentPositions = [1 car(1).position(1) 1];
 %% simulation loop
 for n=2:(numIterations+1)
     if n==2
         m=2;
         index=1;
+        % initialize the first car
+        car(index) = initializeCar(index);
+        % current position of car 1 is: index 1, position, lane 1.
+        currentPositions = [index car(index).position(m-1) 1];
     elseif (car(index).position(m)>= roadLength)
-        index=2;    
+        index=index+1;    
         car(index) = initializeCar(index);
         m = 2;
     else
@@ -47,9 +47,6 @@ for n=2:(numIterations+1)
         (car(index).speed(m-1)<car(index).desiredSpeed)* car(index).frustration(m-1);
     car(index).acceleration = calcAcceleration(car(index).frustration(m), ...
         car(index).speed(m),car(index).desiredSpeed, followingDistance);
-    %if(car(1).position(m)>=roadLength)
-    %    car(1) = initializeCar(1);
-    %end
 end
 
 %% visualize
@@ -61,6 +58,10 @@ midroad(1:roadLength+1) = 3;
 %%
 n = car(1).position;
 m = car(2).position;
+b = [];
+for i=1:index
+    b = [ b; car(i).position];
+end
 nImages = length(n) + length(m);
 
 fig = figure;

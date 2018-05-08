@@ -68,18 +68,14 @@ for idx = 1:nImages
     hold on;
     road1=plot(road,toproad,'black');
     road2=plot(road,bottomroad,'black');
-    if idx <= length(n)
-        carposn=scatter(n(idx), 3,100,'filled','s','blue');
-    else
-        carposn2 = scatter(m(idx-length(n)),3,100,'filled','s','green');
-    end
+    carposn=scatter(n(idx), 3,100,'filled','s','blue');
+    carposn2 = scatter(m(idx),
     hold off;
     ylim([0 7]);
     xlim([0 roadLength]);
     drawnow
     frame = getframe(fig);
     delete(carposn);
-    delete(carposn2);
     im{idx} = frame2im(frame);
 end
 close;

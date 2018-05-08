@@ -12,27 +12,27 @@ simLength = 100;
 % numIterations
 numIterations = simLength / dt;
 
-%% car struct definition 
+% car struct definition 
 car = struct('index',[],'desiredSpeed',[],'frustration',[],'acceleration',[],'position',[],'speed',[]);
 
-%% model constants
+% model constants
 decelerationConstant = -.5;
 minFollowingDistance = 2;
 roadLength = 100;
 
-%% model anonymous functions
+% model anonymous functions
 
-%% initialize a car
-car(1) = initializeCar(1);
-% current position of car 1 is: index 1, position, lane 1.
-currentPositions = [1 car(1).position(1) 1];
-%% simulation loop
+% simulation loop
 for n=2:(numIterations+1)
     if n==2
         m=2;
         index=1;
+        % initialize the first car
+        car(index) = initializeCar(index);
+        % current position of car 1 is: index 1, position, lane 1.
+        currentPositions = [index car(index).position(m-1) 1];
     elseif (car(index).position(m)>= roadLength)
-        index=2;    
+        index=index+1;    
         car(index) = initializeCar(index);
         m = 2;
     else
@@ -47,9 +47,6 @@ for n=2:(numIterations+1)
         (car(index).speed(m-1)<car(index).desiredSpeed)* car(index).frustration(m-1);
     car(index).acceleration = calcAcceleration(car(index).frustration(m), ...
         car(index).speed(m),car(index).desiredSpeed, followingDistance);
-    %if(car(1).position(m)>=roadLength)
-    %    car(1) = initializeCar(1);
-    %end
 end
 
 %% visualize
@@ -59,28 +56,28 @@ bottomroad(1:roadLength+1) = 2;
 midroad(1:roadLength+1) = 3;
 
 %%
-n = car(1).position;
-m = car(2).position;
-nImages = length(n) + length(m);
-
+b = cell(index,1);
+nImages=0;
+for i=1:index
+    b{i} = car(i).position;
+    nImages = nImages + length(b{i});
+end
+%%
 fig = figure;
-for idx = 1:nImages
-    hold on;
-    road1=plot(road,toproad,'black');
-    road2=plot(road,bottomroad,'black');
-    if idx <= length(n)
-        carposn=scatter(n(idx), 3,100,'filled','s','blue');
-    else
-        carposn2 = scatter(m(idx-length(n)),3,100,'filled','s','green');
+for cr = 1:length(b)
+    for idx = 1:length(b{cr})
+        hold on;
+        road1=plot(road,toproad,'black');
+        road2=plot(road,bottomroad,'black');
+        carposn=scatter(b{cr}(idx), 3,100,'filled','s','blue');
+        hold off;
+        ylim([0 7]);
+        xlim([0 roadLength]);
+        drawnow
+        frame = getframe(fig);
+        delete(carposn);
+        im{idx} = frame2im(frame);
     end
-    hold off;
-    ylim([0 7]);
-    xlim([0 roadLength]);
-    drawnow
-    frame = getframe(fig);
-    delete(carposn);
-    delete(carposn2);
-    im{idx} = frame2im(frame);
 end
 close;
 %%
