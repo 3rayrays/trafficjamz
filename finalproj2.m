@@ -8,7 +8,7 @@
 %% simulation constants
 dt = 0.1;
 % simulation length
-simLength = 100;
+simLength = 50;
 % numIterations
 numIterations = simLength / dt;
 % initialize time
@@ -16,7 +16,7 @@ t = 0;
 % initialize index
 index = 0;
 % number of cars on road at once
-numberOfCars = 2;
+numberOfCars = 3;
 % initialize currentPositions
 currentPositions = [];
 
@@ -24,8 +24,8 @@ currentPositions = [];
 car = struct('index',[],'desiredSpeed',[],'frustration',[],'acceleration',[],'position',[],'speed',[],'time',[]);
 
 % model constants
-decelerationConstant = -.5;
-minFollowingDistance = 2;
+decelerationConstant = -5;
+minFollowingDistance = 10;
 roadLength = 100;
 
 % model anonymous functions
@@ -37,6 +37,9 @@ for n=2:(numIterations+1)
         % initialize the first car
         index = index + 1;
         car(index) = initializeCar(index,t(n));
+        if index==1
+            car(index).position(n-1) = 50;
+        end
         % current position of car 1 is: index 1, position, lane 1.
         currentPositions = [currentPositions; index car(index).position(end) 1];
         % currentPositions(currentPositions(1,:)==index,2) gets position 
@@ -68,13 +71,16 @@ end
 
 %% transform data
 
+posnmatrix = [];
 
 for i=1:index
     times = car(i).time;
     starting = find(t==times(1));
     ending = find(t==times(end));
     car(i).position = [-1*ones(1,starting-1), car(i).position, roadLength + ones(1,length(t) - ending)];
+    posnmatrix = [posnmatrix; car(i).position];
 end
+
 
 %% visualize
 road = 0:1:roadLength;
@@ -83,56 +89,20 @@ bottomroad(1:roadLength+1) = 2;
 midroad(1:roadLength+1) = 3;
 
 %%
-% b = cell(index,1);
-% nImages=length(t);
-% for i=1:index
-%     b{i} = car(i).position;
-%     nImages = nImages + length(b{i});
-% end
-%%
 fig = figure;
-for a = 1:length(t)
+for a = 1:length(posnmatrix(1,:))
     hold on;
     road1=plot(road,toproad,'black');
     road2=plot(road,bottomroad,'black');
     for dt = 1:length(car)
-        scatter(b{a}(dt), 3,100,'filled','s','blue');
+        carposn(dt) = scatter(posnmatrix(dt,a), 3,100,'filled','s','blue');
         ylim([-5 11]);
         xlim([0 roadLength]);
-        delete(carposn);
     end
     hold off;
     drawnow
     frame = getframe(fig);
+    delete(carposn);
     im{dt} = frame2im(frame);
 end
 close;
-
-%%
-% fig = figure;
-% for cr = 1:length(b)
-%     for idx = 1:length(b{cr})
-%         hold on;
-%         road1=plot(road,toproad,'black');
-%         road2=plot(road,bottomroad,'black');
-%         carposn=scatter(b{cr}(idx), 3,100,'filled','s','blue');
-%         hold off;
-%         ylim([-5 11]);
-%         xlim([0 roadLength]);
-%         drawnow
-%         frame = getframe(fig);
-%         delete(carposn);
-%         im{idx} = frame2im(frame);
-%     end
-% end
-% close;
-%%
-% filename = 'testAnimated.gif'; % Specify the output file name
-% for idx = 1:nImages
-%     [A,map] = rgb2ind(im{idx},256);
-%     if idx == 1
-%         imwrite(A,map,filename,'gif','LoopCount',Inf,'DelayTime',.5);
-%     else
-%         imwrite(A,map,filename,'gif','WriteMode','append','DelayTime',.05);
-%     end
-% end

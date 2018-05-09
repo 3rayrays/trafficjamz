@@ -1,6 +1,6 @@
 function accel = calcAcceleration(frustration,curSpeed,desiredSpeed,followingDistance)
 decelerationConstant = -5;
-minFollowingDistance = 2;
+minFollowingDistance = 10;
 
 if curSpeed > desiredSpeed
     accel = decelerationConstant;
@@ -9,7 +9,7 @@ elseif followingDistance <= minFollowingDistance
 elseif curSpeed == desiredSpeed
     accel = 0;
 else
-    accel = frustration*10;
+    accel = frustration*100;
 end
 
 end
