@@ -88,14 +88,21 @@ toproad(1:roadLength+1) = 4;
 bottomroad(1:roadLength+1) = 2;
 midroad(1:roadLength+1) = 3;
 
+colors = {'yellow','magenta','cyan','red','blue','green','black'};
 %%
 fig = figure;
 for a = 1:length(posnmatrix(1,:))
     hold on;
     road1=plot(road,toproad,'black');
     road2=plot(road,bottomroad,'black');
+    carIndex = 1;
     for dt = 1:length(car)
-        carposn(dt) = scatter(posnmatrix(dt,a), 3,100,'filled','s','blue');
+        carposn(dt) = scatter(posnmatrix(dt,a), 3,100,'filled','s',colors{carIndex});
+        if carIndex >= length(colors)
+            carIndex = 1;
+        else
+            carIndex = carIndex + 1;
+        end
         ylim([-5 11]);
         xlim([0 roadLength]);
     end

@@ -1,4 +1,4 @@
-function accel = calcAcceleration(frustration,curSpeed,desiredSpeed,followingDistance)
+gitfunction accel = calcAcceleration(frustration,curSpeed,desiredSpeed,followingDistance)
 maxFollowingDistance = 30;
 minFollowingDistance = 10;
 

@@ -16,7 +16,7 @@ else
         followingDistance = roadLength;
         leadingCarSpeed = roadLength;
     else
-        leadingCarPosn = min((otherCars(:,1) - position > 0)* (otherCars(:,1)));
+        leadingCarPosn = min(otherCars(otherCars(:,1)-position>0,1));
         followingDistance = leadingCarPosn - position;
         leadingCarSpeed = currentPositions(currentPositions(:,2)==leadingCarPosn, 3);
     end
