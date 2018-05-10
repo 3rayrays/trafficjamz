@@ -10,7 +10,6 @@ car(index).speed = 25 + rand * 25;
 car(index).position = 0;
 car(index).acceleration = 0;
 car(index).time = t;
-car(index).lane = (1 + (rand>=.5));
 car = car(index);
 
 end
