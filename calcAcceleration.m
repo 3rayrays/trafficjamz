@@ -1,4 +1,4 @@
-gitfunction accel = calcAcceleration(frustration,curSpeed,desiredSpeed,followingDistance)
+function accel = calcAcceleration(frustration,curSpeed,desiredSpeed,followingDistance,leadingCarSpeed)
 maxFollowingDistance = 30;
 minFollowingDistance = 10;
 
@@ -42,6 +42,7 @@ elseif followingDistance < minFollowingDistance
     else
         accel = -2;
     end
+    accel = min(accel, accel - 0.5*(curSpeed - leadingCarSpeed)^2 / followingDistance);
 else
     %car-following
     alphA = 2;

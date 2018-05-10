@@ -53,8 +53,9 @@ for n=2:(numIterations+1)
         car(i).position(end+1) = car(i).position(end) + car(i).speed(end) * dt;
         car(i).frustration(end+1) = ...
             (car(i).speed(end)<car(i).desiredSpeed)* car(i).frustration(end);
+        [followingDistance,leadingCarSpeed] = calcDistance(i,currentPositions);
         car(i).acceleration = calcAcceleration(car(i).frustration(end), ...
-            car(i).speed(end),car(i).desiredSpeed, calcDistance(i,currentPositions));
+            car(i).speed(end),car(i).desiredSpeed, followingDistance, leadingCarSpeed);
         % set the current position of the car in the currentPositions matrix
         % equal to the current position of the car.
         if car(i).position(end)>=roadLength
@@ -97,7 +98,7 @@ for a = 1:length(posnmatrix(1,:))
     road2=plot(road,bottomroad,'black');
     carIndex = 1;
     for dt = 1:length(car)
-        carposn(dt) = scatter(posnmatrix(dt,a), 3,100,'filled','s',colors{carIndex});
+        carposn(dt) = scatter(posnmatrix(dt,a), 3,100,'filled','s','MarkerEdgeColor','black','MarkerFaceColor',colors{carIndex},'LineWidth',1.5);
         if carIndex >= length(colors)
             carIndex = 1;
         else
@@ -110,6 +111,16 @@ for a = 1:length(posnmatrix(1,:))
     drawnow
     frame = getframe(fig);
     delete(carposn);
-    im{dt} = frame2im(frame);
+    im{a} = frame2im(frame);
 end
 close;
+
+filename = 'testAnimated.gif'; % Specify the output file name
+for a = 1:length(posnmatrix(1,:))
+    [A,map] = rgb2ind(im{a},256);
+    if a == 1
+        imwrite(A,map,filename,'gif','LoopCount',Inf,'DelayTime',.5);
+    else
+        imwrite(A,map,filename,'gif','WriteMode','append','DelayTime',.05);
+    end
+end
