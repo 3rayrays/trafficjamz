@@ -44,10 +44,10 @@ elseif followingDistance < minFollowingDistance
     end
 else
     %car-following
-    alphA = 2;
-    betA = 1;
-    gammA = 1;
-    accel = alphA * curSpeed^betA / followingDistance^gammA;
+    alpha = 2;
+    beta = 1;
+    gamma = 1;
+    accel = alpha * curSpeed^beta / followingDistance^gamma;
 end
 
 end

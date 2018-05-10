@@ -40,8 +40,8 @@ for n=2:(numIterations+1)
         if index==1
             car(index).position(n-1) = 50;
         end
-        % current position of car 1 is: index 1, position, lane 1.
-        currentPositions = [currentPositions; index car(index).position(end) 1];
+        % current position of car 1 is: index 1, position, speed, lane 1.
+        currentPositions = [currentPositions; index car(index).position(end) car(index).speed(end) 1];
         % currentPositions(currentPositions(1,:)==index,2) gets position 
         % of car with index index.
     end
@@ -49,7 +49,7 @@ for n=2:(numIterations+1)
     for a=1:length(currentCars)
         i = currentCars(a);
         car(i).time(end+1) = t(n);
-        car(i).speed(end+1) = ((car(i).speed(end) + car(i).acceleration * dt) >= 0) * (car(i).speed(end) + car(i).acceleration * dt);
+        car(i).speed(end+1) =  (car(i).speed(end) + car(i).acceleration * dt);
         car(i).position(end+1) = car(i).position(end) + car(i).speed(end) * dt;
         car(i).frustration(end+1) = ...
             (car(i).speed(end)<car(i).desiredSpeed)* car(i).frustration(end);
@@ -60,11 +60,11 @@ for n=2:(numIterations+1)
         if car(i).position(end)>=roadLength
             % if the car has gone off the road, remove it from
             % currentPositions
-            % something is wrong with this
             currentPositions = currentPositions(currentPositions(:,1)~=i,:);
         else 
             % else update their currentPosition 
             currentPositions(currentPositions(:,1)==i,2)=car(i).position(end);
+            currentPositions(currentPositions(:,1)==i,3)=car(i).speed(end);
         end
     end
 end

@@ -1,12 +1,12 @@
 function car = initializeCar(index,t)
 
-initializeDesiredSpeed = @() 20 + rand * 30;
+initializeDesiredSpeed = @() 30 + rand * 20;
 initializeFrustration = @() rand;
 
 car(index).index = index;
 car(index).desiredSpeed = initializeDesiredSpeed();
 car(index).frustration = initializeFrustration();
-car(index).speed = 0 + rand * 10;
+car(index).speed = 25 + rand * 25;
 car(index).position = 0;
 car(index).acceleration = 0;
 car(index).time = t;
