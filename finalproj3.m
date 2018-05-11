@@ -10,7 +10,7 @@ simLength = 50;
 % numIterations
 numIterations = simLength / dt;
 % number of cars on road at once
-numberOfCars = 6;
+numberOfCars = 10;
 % number of lanes on the road at the beginning of the road
 numLanes = 2;
 
@@ -38,7 +38,7 @@ minFollowingDistance = 15;
 % transition from free driving to car-following behavior
 maxFollowingDistance = 30;
 % roadLength = length of road being simulated
-roadLength = 100;
+roadLength = 200;
 % frustrationThreshold = value at which drivers will either switch lanes 
 % or honk to relieve frustration
 frustrationThreshold = 1.5;
