@@ -147,7 +147,7 @@ toproad(1:roadLength+1) = 2.5;
 bottomroad(1:roadLength+1) = .5;
 midroad(1:roadLength+1) = 1.5;
 
-colors = {'yellow','magenta','cyan','red','blue','green','black'};
+colors = {'yellow','magenta','cyan','blue','green','black'};
 %%
 fig = figure;
 for a = 1:length(posnmatrix(1,:))
@@ -159,7 +159,7 @@ for a = 1:length(posnmatrix(1,:))
     for dt = 1:length(car)
         carposn(dt) = scatter(posnmatrix(dt,a), lanematrix(dt,a),100,'filled','s','MarkerEdgeColor','black','MarkerFaceColor',colors{carIndex},'LineWidth',1.5);
         if honkmatrix(dt,a)==1
-            honk(dt) = scatter(posnmatrix(dt,a),lanematrix(dt,a),'red');
+            honk(dt) = scatter(posnmatrix(dt,a),lanematrix(dt,a),'red','filled');
         else
             honk(dt) = scatter(posnmatrix(dt,a),-10,'red');
         end
