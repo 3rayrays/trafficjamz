@@ -63,9 +63,8 @@ for n=2:(numIterations+1)
             (car(i).speed(end)<car(i).desiredSpeed)* car(i).frustration(end);
         car(i).lane(end+1) = car(i).lane(end);
         % if frustration is beyond the threshold and you aren't in the
-        % middle of a lane change, OR randomly change lanes 1/5 of time
-        % that you can
-        if (car(i).frustration(end)>frustrationThreshold || rand<=0.1 ) && rem(car(i).lane(end-1),1)==0
+        % middle of a lane change
+        if car(i).frustration(end)>frustrationThreshold && rem(car(i).lane(end-1),1)==0
             % can you change lanes?
             laneChange = canChangeLanes(i, currentPositions, numLanes);
             if laneChange == 0 % if you can't change lanes, stay in your lane
@@ -75,10 +74,10 @@ for n=2:(numIterations+1)
             end
         elseif rem(car(i).lane(end-1),1)~=0 % if you are in the middle of a lane change
             % finish the lane change
-            if car(i).lane(end-1) - car(i).lane(end-2) < 0
-                car(i).lane(end) = car(i).lane(end) - 0.5;
+            if car(i).lane(end) - car(i).lane(end-1) < 0
+                car(i).lane(end+1) = car(i).lane(end) - 0.5;
             else
-                car(i).lane(end) = car(i).lane(end) + 0.5;
+                car(i).lane(end+1) = car(i).lane(end) + 0.5;
             end
             % frustration level goes down after changing lanes
             car(i).frustration(end) = baseFrustration;
