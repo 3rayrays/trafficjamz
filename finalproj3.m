@@ -23,11 +23,12 @@ numLanes = 2;
 currentPositions = [];
 
 %% car struct definition 
-car = struct('index',[],'desiredSpeed',[],'frustration',[],'acceleration',[],'position',[],'speed',[],'time',[],'lane',[]);
+car = struct('index',[],'desiredSpeed',[],'frustration',[],'acceleration',[],'position',[],'speed',[],'time',[],'lane',[],'honk',[]);
 
 % model constants
 decelerationConstant = -5;
 minFollowingDistance = 10;
+maxFollowingDistance = 30;
 roadLength = 100;
 
 frustrationThreshold = 1.5;
@@ -62,28 +63,45 @@ for n=2:(numIterations+1)
         car(i).frustration(end+1) = ...
             (car(i).speed(end)<car(i).desiredSpeed)* car(i).frustration(end);
         car(i).lane(end+1) = car(i).lane(end);
+        car(i).honk(end+1) = car(i).honk(end);
         % if frustration is beyond the threshold and you aren't in the
         % middle of a lane change, OR randomly change lanes 1/5 of time
         % that you can
         if (car(i).frustration(end)>frustrationThreshold || rand<=0.1 ) && rem(car(i).lane(end-1),1)==0
             % can you change lanes?
             laneChange = canChangeLanes(i, currentPositions, numLanes);
-            if laneChange == 0 % if you can't change lanes, stay in your lane
+            if laneChange == 0 % if you can't change lanes, stay in your lane & honk
                 car(i).lane(end) = car(i).lane(end);
+                car(i).honk(end) = 1;
+                % frustration is somewhat relieved for honking
+                car(i).frustration(end) = (car(i).frustration(end) - baseFrustration)/2 + baseFrustration;
+                % make those around you more frustrated because you honked
+                for c=1:length(currentCars)
+                    j=currentCars(c);
+                    if i~=j
+                        %if they are close by to the car, then they are
+                        %affected
+                        if abs(car(j).position(end) - car(i).position(end))<= maxFollowingDistance
+                            % frustration increases by some function...
+                            car(j).frustration(end) = car(j).frustration(end) + 0.05;
+                        end
+                    end
+                end
             else % start to change lanes
                 car(i).lane(end) = (car(i).lane(end) + laneChange) / 2;
+                car(i).honk(end)=0;
             end
         elseif rem(car(i).lane(end-1),1)~=0 % if you are in the middle of a lane change
             % finish the lane change
             if car(i).lane(end-1) - car(i).lane(end-2) < 0
                 car(i).lane(end) = car(i).lane(end) - 0.5;
+                car(i).honk(end)=0;
             else
                 car(i).lane(end) = car(i).lane(end) + 0.5;
+                car(i).honk(end)=0;
             end
             % frustration level goes down after changing lanes
             car(i).frustration(end) = baseFrustration;
-        elseif car(i).frustration(end)>frustrationThreshold
-            %implement honking here
         end
         [followingDistance,leadingCarSpeed,leadingCarAccel] = calcDistance(i,currentPositions);
         car(i).acceleration = calcAcceleration(car(i).frustration(end), ...
@@ -108,6 +126,7 @@ end
 
 posnmatrix = [];
 lanematrix = [];
+honkmatrix = [];
 
 for i=1:index
     times = car(i).time;
@@ -115,8 +134,10 @@ for i=1:index
     ending = find(t==times(end));
     car(i).position = [-1*ones(1,starting-1), car(i).position, roadLength + ones(1,length(t) - ending)];
     car(i).lane = [ones(1,starting-1), car(i).lane, ones(1,length(t)-ending)];
+    car(i).honk = [zeros(1,starting-1), car(i).honk, zeros(1,length(t)-ending)];
     lanematrix = [lanematrix; car(i).lane];
     posnmatrix = [posnmatrix; car(i).position];
+    honkmatrix = [honkmatrix; car(i).honk];
 end
 
 
@@ -137,6 +158,11 @@ for a = 1:length(posnmatrix(1,:))
     carIndex = 1;
     for dt = 1:length(car)
         carposn(dt) = scatter(posnmatrix(dt,a), lanematrix(dt,a),100,'filled','s','MarkerEdgeColor','black','MarkerFaceColor',colors{carIndex},'LineWidth',1.5);
+        if honkmatrix(dt,a)==1
+            honk(dt) = scatter(posnmatrix(dt,a),lanematrix(dt,a),'red');
+        else
+            honk(dt) = scatter(posnmatrix(dt,a),-10,'red');
+        end
         if carIndex >= length(colors)
             carIndex = 1;
         else
@@ -149,6 +175,7 @@ for a = 1:length(posnmatrix(1,:))
     drawnow
     frame = getframe(fig);
     delete(carposn);
+    delete(honk);
     im{a} = frame2im(frame);
 end
 close;

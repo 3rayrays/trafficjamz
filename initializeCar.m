@@ -11,6 +11,7 @@ car(index).position = 0;
 car(index).acceleration = 0;
 car(index).time = t;
 car(index).lane = (1 + (rand(1,lanes-1)>=.5));
+car(index).honk = 0;
 car = car(index);
 
 end
