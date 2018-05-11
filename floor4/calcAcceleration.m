@@ -1,6 +1,15 @@
 function accel = calcAcceleration(frustration,curSpeed,desiredSpeed,followingDistance,leadingCarSpeed,leadingCarAccel)
+
 maxFollowingDistance = 30;
 minFollowingDistance = 10;
+
+AlphaMinus = 1.55;
+AlphaPlus = 2.15;
+BetaMinus = 1.08;
+BetaPlus = -1.67;
+GammaMinus = 1.65;
+GammaPlus = -0.89;
+carLength = 4.5;
 
 if followingDistance > maxFollowingDistance
     %free driving
@@ -22,11 +31,11 @@ if followingDistance > maxFollowingDistance
     else
         %a_n^+
         if curSpeed < 6.096
-            accel = 7.8;
+            accel = 7.8 * frustration;
         elseif curSpeed >= 6.096 && curSpeed < 12.192
-            accel = 6.7;
+            accel = 6.7 * frustration;
         else
-            accel = 4.8;
+            accel = 4.8 * frustration;
         end
     end
 elseif followingDistance < minFollowingDistance
@@ -42,7 +51,12 @@ elseif followingDistance < minFollowingDistance
     else
         accel = -2;
     end
-    accel = min(accel, accel - 0.5*(curSpeed - leadingCarSpeed)^2 / followingDistance);
+    if curSpeed > leadingCarSpeed
+        accel = min(accel, leadingCarAccel - 0.5*...
+            (curSpeed - leadingCarSpeed)^2 / (followingDistance - carLength));
+    else
+        accel = min(accel, leadingCarAccel + 0.25 * accel);
+    end
 else
     %car-following
     if curSpeed > leadingCarSpeed
@@ -56,6 +70,8 @@ else
     end
     accel = Alpha * curSpeed ^ Beta * (leadingCarSpeed - curSpeed)/...
             (followingDistance - carLength)^Gamma;
+    if curSpeed < desiredSpeed
+        accel = accel * sqrt(frustration);
 end
 
 end

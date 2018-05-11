@@ -28,6 +28,7 @@ car = struct('index',[],'desiredSpeed',[],'frustration',[],'acceleration',[],'po
 % model constants
 decelerationConstant = -5;
 minFollowingDistance = 10;
+maxFollowingDistance = 30;
 roadLength = 100;
 
 frustrationThreshold = 1.5;
@@ -75,7 +76,8 @@ for n=2:(numIterations+1)
                 % frustration is somewhat relieved for honking
                 car(i).frustration(end) = (car(i).frustration(end) - baseFrustration)/2 + baseFrustration;
                 % make those around you more frustrated because you honked
-                for j=1:length(currentCars)
+                for c=1:length(currentCars)
+                    j=currentCars(c);
                     if i~=j
                         %if they are close by to the car, then they are
                         %affected
@@ -124,6 +126,7 @@ end
 
 posnmatrix = [];
 lanematrix = [];
+honkmatrix = [];
 
 for i=1:index
     times = car(i).time;
@@ -144,7 +147,7 @@ toproad(1:roadLength+1) = 2.5;
 bottomroad(1:roadLength+1) = .5;
 midroad(1:roadLength+1) = 1.5;
 
-colors = {'yellow','magenta','cyan','red','blue','green','black'};
+colors = {'yellow','magenta','cyan','blue','green','black'};
 %%
 fig = figure;
 for a = 1:length(posnmatrix(1,:))
@@ -156,7 +159,9 @@ for a = 1:length(posnmatrix(1,:))
     for dt = 1:length(car)
         carposn(dt) = scatter(posnmatrix(dt,a), lanematrix(dt,a),100,'filled','s','MarkerEdgeColor','black','MarkerFaceColor',colors{carIndex},'LineWidth',1.5);
         if honkmatrix(dt,a)==1
-            honk(dt) = scatter(posnmatrix(dt,a),lanematrix(dt,a),'red');
+            honk(dt) = scatter(posnmatrix(dt,a),lanematrix(dt,a),'red','filled');
+        else
+            honk(dt) = scatter(posnmatrix(dt,a),-10,'red');
         end
         if carIndex >= length(colors)
             carIndex = 1;
