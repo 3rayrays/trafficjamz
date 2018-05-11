@@ -9,7 +9,7 @@ BetaMinus = 1.08;
 BetaPlus = -1.67;
 GammaMinus = 1.65;
 GammaPlus = -0.89;
-carLength = 10;
+carLength = 4.5;
 
 if followingDistance > maxFollowingDistance
     %free driving

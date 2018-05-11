@@ -12,7 +12,7 @@ numIterations = simLength / dt;
 % number of cars on road at once
 numberOfCars = 10;
 % number of lanes on the road at the beginning of the road
-numLanes = 3;
+numLanes = 2;
 
 %% car struct definition 
 
@@ -195,10 +195,9 @@ end
 
 %% visualize
 road = 0:1:roadLength;
-toproad(1:roadLength+1) = 3.5;
-midroad2(1:roadLength+1) = 2.5;
-midroad(1:roadLength+1) = 1.5;
+toproad(1:roadLength+1) = 2.5;
 bottomroad(1:roadLength+1) = .5;
+midroad(1:roadLength+1) = 1.5;
 
 colors = {'yellow','magenta','cyan','blue','green','black'};
 %%
@@ -208,16 +207,14 @@ for a = 1:length(posnmatrix(1,:))
     road1=plot(road,toproad,'black');
     road2=plot(road,bottomroad,'black');
     road3=plot(road,midroad,'magenta');
-    road4=plot(road,midroad2,'magenta');
     carIndex = 1;
     for dt = 1:length(car)
-        carposn(dt) = scatter(posnmatrix(dt,a), lanematrix(dt,a),20,'filled','s','MarkerFaceColor',colors{carIndex},'MarkerEdgeColor','black', 'LineWidth', 1);
-        %carposn(dt) = scatter(posnmatrix(dt,a), lanematrix(dt,a),100,'filled','s','MarkerEdgeColor','black','MarkerFaceColor',colors{carIndex},'LineWidth',1.5);
-        if honkmatrix(dt,a)==1
-            honk(dt) = scatter(posnmatrix(dt,a),lanematrix(dt,a),'red','filled');
-        else
-            honk(dt) = scatter(posnmatrix(dt,a),-10,'red');
-        end
+        carposn(dt) = scatter(posnmatrix(dt,a), lanematrix(dt,a),100,'filled','s','MarkerEdgeColor','black','MarkerFaceColor',colors{carIndex},'LineWidth',1.5);
+%         if honkmatrix(dt,a)==1
+%             honk(dt) = scatter(posnmatrix(dt,a),lanematrix(dt,a),'red','filled');
+%         else
+%             honk(dt) = scatter(posnmatrix(dt,a),-10,'red');
+%         end
         if carIndex >= length(colors)
             carIndex = 1;
         else
@@ -230,7 +227,7 @@ for a = 1:length(posnmatrix(1,:))
     drawnow
     frame = getframe(fig);
     delete(carposn);
-    %delete(honk);
+    delete(honk);
     im{a} = frame2im(frame);
 end
 close;
