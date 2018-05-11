@@ -1,7 +1,7 @@
 function accel = calcAcceleration(frustration,curSpeed,desiredSpeed,followingDistance,leadingCarSpeed,leadingCarAccel)
 
 maxFollowingDistance = 30;
-minFollowingDistance = 10;
+minFollowingDistance = 15;
 
 AlphaMinus = 1.55;
 AlphaPlus = 2.15;

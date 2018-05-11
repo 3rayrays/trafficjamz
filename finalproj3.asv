@@ -151,18 +151,17 @@ for n=2:(numIterations+1)
         end
         % get the current car's following distance, and their leading 
         % car's speed and acceleration
-        [followingDistance,leadingCarSpeed,leadingCarAccel] = ...
-            calcDistance(i,currentPositions);
-        % calculate the current acceleration
+        [followingDistance,leadingCarSpeed,leadingCarAccel] = calcDistance(i,currentPositions);
         car(i).acceleration = calcAcceleration(car(i).frustration(end), ...
-            car(i).speed(end),car(i).desiredSpeed, followingDistance, ...
-            leadingCarSpeed, leadingCarAccel);
-        % if the car has gone off the road
+            car(i).speed(end),car(i).desiredSpeed, followingDistance, leadingCarSpeed, leadingCarAccel);
+        % set the current position of the car in the currentPositions matrix
+        % equal to the current position of the car.
         if car(i).position(end)>=roadLength
-            % then remove it from currentPositions
+            % if the car has gone off the road, remove it from
+            % currentPositions
             currentPositions = currentPositions(currentPositions(:,1)~=i,:);
         else 
-            % else update their currentPosition, speed, accel, and lane
+            % else update their currentPosition 
             currentPositions(currentPositions(:,1)==i,2)=car(i).position(end);
             currentPositions(currentPositions(:,1)==i,3)=car(i).speed(end);
             currentPositions(currentPositions(:,1)==i,4)=car(i).acceleration;
@@ -172,13 +171,10 @@ for n=2:(numIterations+1)
 end
 
 %% transform data
-% create matrices where each row is information for a particular car and
-% each column corresponds to a particular timestep. this information will
-% be used in visualizing the simulation
 
-posnmatrix = []; % matrix of positions
-lanematrix = []; % matrix of lanes
-honkmatrix = []; % matrix of honking status
+posnmatrix = [];
+lanematrix = [];
+honkmatrix = [];
 
 for i=1:index
     times = car(i).time;
