@@ -1,7 +1,6 @@
-function output = canChangeLanes(index, currentPositions, numLanes)
+function output = canChangeLanes(index, currentPositions, numLanes, minFollowingDistance)
 
 output = 0;
-minFollowingDistance = 15;
 carsInOtherLanesLeft = [];
 carsInOtherLanesRight = [];
 left = false;

@@ -1,7 +1,6 @@
-function accel = calcAcceleration(frustration,curSpeed,desiredSpeed,followingDistance,leadingCarSpeed,leadingCarAccel)
-
-maxFollowingDistance = 30;
-minFollowingDistance = 15;
+function accel = calcAcceleration(frustration,curSpeed,desiredSpeed,...
+    followingDistance,leadingCarSpeed,leadingCarAccel,...
+    maxFollowingDistance,minFollowingDistance)
 
 AlphaMinus = 1.55;
 AlphaPlus = 2.15;
@@ -72,6 +71,7 @@ else
             (followingDistance - carLength)^Gamma;
     if curSpeed < desiredSpeed
         accel = accel * sqrt(frustration);
+    end
 end
 
 end

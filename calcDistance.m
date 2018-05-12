@@ -1,8 +1,6 @@
 function [followingDistance,leadingCarSpeed,leadingCarAccel] = ...
-    calcDistance(index,currentPositions)
+    calcDistance(index,currentPositions,roadLength)
 
-% model parameters
-roadLength = 100;
 
 % get the position of the car
 position = currentPositions(currentPositions(:,1)==index,2);

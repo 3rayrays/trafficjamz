@@ -98,7 +98,8 @@ for n=2:(numIterations+1)
         % calculate frustration using the speed
         car(i).frustration(end+1) = ...
             (car(i).speed(end)<car(i).desiredSpeed) * ...
-            car(i).frustration(end);
+            car(i).frustration(end) + ...
+            (car(i).speed(end)>=car(i).desiredSpeed) * 1 ;
         % initialize current lane and current honk status to be the same 
         % as in the last timestep, then it will be possibly changed below
         car(i).lane(end+1) = car(i).lane(end);
@@ -108,7 +109,7 @@ for n=2:(numIterations+1)
         if (car(i).frustration(end)>=frustrationThreshold || ...
                 rand<=0.01 ) && rem(car(i).lane(end-1),1)==0
             % check whether you are able to change lanes
-            laneChange = canChangeLanes(i, currentPositions, numLanes);
+            laneChange = canChangeLanes(i, currentPositions, numLanes,minFollowingDistance);
             % if you can't change lanes, stay in your lane & honk
             if laneChange == 0 
                 car(i).honk(end) = 1;
@@ -152,11 +153,12 @@ for n=2:(numIterations+1)
         % get the current car's following distance, and their leading 
         % car's speed and acceleration
         [followingDistance,leadingCarSpeed,leadingCarAccel] = ...
-            calcDistance(i,currentPositions);
+            calcDistance(i,currentPositions,roadLength);
         % calculate the current acceleration
         car(i).acceleration = calcAcceleration(car(i).frustration(end), ...
             car(i).speed(end),car(i).desiredSpeed, followingDistance, ...
-            leadingCarSpeed, leadingCarAccel);
+            leadingCarSpeed, leadingCarAccel,maxFollowingDistance,...
+            minFollowingDistance);
         % if the car has gone off the road
         if car(i).position(end)>=roadLength
             % then remove it from currentPositions
@@ -192,7 +194,6 @@ for i=1:index
     honkmatrix = [honkmatrix; car(i).honk];
 end
 
-
 %% visualize
 road = 0:1:roadLength;
 toproad(1:roadLength+1) = 3.5;
@@ -202,8 +203,8 @@ bottomroad(1:roadLength+1) = .5;
 
 colors = {'yellow','magenta','cyan','blue','green','black'};
 %%
-fig = figure('visible','off');
-%fig = figure;
+%fig = figure('visible','off');
+fig = figure;
 for a = 1:length(posnmatrix(1,:))
     hold on;
     road1=plot(road,toproad,'black');
@@ -215,7 +216,7 @@ for a = 1:length(posnmatrix(1,:))
         carposn(dt) = scatter(posnmatrix(dt,a), lanematrix(dt,a),20,'filled','s','MarkerFaceColor',colors{carIndex},'MarkerEdgeColor','black', 'LineWidth', 1);
         %carposn(dt) = scatter(posnmatrix(dt,a), lanematrix(dt,a),100,'filled','s','MarkerEdgeColor','black','MarkerFaceColor',colors{carIndex},'LineWidth',1.5);
         if honkmatrix(dt,a)==1
-            honk(dt) = scatter(posnmatrix(dt,a)+4,lanematrix(dt,a),10,'red','filled');
+            honk(dt) = scatter(posnmatrix(dt,a)+1,lanematrix(dt,a),10,'red','filled');
         else
             honk(dt) = scatter(posnmatrix(dt,a),-10,'red');
         end
@@ -244,4 +245,11 @@ for a = 1:length(posnmatrix(1,:))
     else
         imwrite(A,map,filename,'gif','WriteMode','append','DelayTime',.05);
     end
+end
+
+
+%%
+realcarspeeds = 0;
+for i=1:length(car)
+    realcarspeeds = isreal(car(i).speed) + realcarspeeds;
 end
