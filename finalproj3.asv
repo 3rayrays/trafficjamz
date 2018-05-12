@@ -166,14 +166,10 @@ for n=2:(numIterations+1)
             currentPositions = currentPositions(currentPositions(:,1)~=i,:);
         else 
             % else update their currentPosition, speed, accel, and lane
-            currentPositions(currentPositions(:,1)==i,2)=...
-                car(i).position(end);
-            currentPositions(currentPositions(:,1)==i,3)=...
-                car(i).speed(end);
-            currentPositions(currentPositions(:,1)==i,4)=...
-                car(i).acceleration;
-            currentPositions(currentPositions(:,1)==i,5)=...
-                car(i).lane(end);
+            currentPositions(currentPositions(:,1)==i,2)=car(i).position(end);
+            currentPositions(currentPositions(:,1)==i,3)=car(i).speed(end);
+            currentPositions(currentPositions(:,1)==i,4)=car(i).acceleration;
+            currentPositions(currentPositions(:,1)==i,5)=car(i).lane(end);
         end
     end
 end
@@ -191,12 +187,9 @@ for i=1:index
     times = car(i).time;
     starting = find(t==times(1));
     ending = find(t==times(end));
-    car(i).position = [-1*ones(1,starting-1), car(i).position, ...
-        roadLength + ones(1,length(t) - ending)];
-    car(i).lane = [ones(1,starting-1), car(i).lane, ...
-        ones(1,length(t)-ending)];
-    car(i).honk = [zeros(1,starting-1), car(i).honk, ...
-        zeros(1,length(t)-ending)];
+    car(i).position = [-1*ones(1,starting-1), car(i).position, roadLength + ones(1,length(t) - ending)];
+    car(i).lane = [ones(1,starting-1), car(i).lane, ones(1,length(t)-ending)];
+    car(i).honk = [zeros(1,starting-1), car(i).honk, zeros(1,length(t)-ending)];
     lanematrix = [lanematrix; car(i).lane];
     posnmatrix = [posnmatrix; car(i).position];
     honkmatrix = [honkmatrix; car(i).honk];
@@ -224,12 +217,9 @@ for a = 1:length(posnmatrix(1,:))
         carposn(dt) = scatter(posnmatrix(dt,a), lanematrix(dt,a),20,...
             'filled','s','MarkerFaceColor',colors{carIndex},...
             'MarkerEdgeColor','black', 'LineWidth', 1);
-        %carposn(dt) = scatter(posnmatrix(dt,a), lanematrix(dt,a),100,...
-        %    'filled','s','MarkerEdgeColor','black','MarkerFaceColor',...
-        %    colors{carIndex},'LineWidth',1.5);
+        carposn(dt) = scatter(posnmatrix(dt,a), lanematrix(dt,a),100,'filled','s','MarkerEdgeColor','black','MarkerFaceColor',colors{carIndex},'LineWidth',1.5);
         if honkmatrix(dt,a)==1
-            honk(dt) = scatter(posnmatrix(dt,a)+1,lanematrix(dt,a),10,...
-                'red','filled');
+            honk(dt) = scatter(posnmatrix(dt,a)+1,lanematrix(dt,a),10,'red','filled');
         else
             honk(dt) = scatter(posnmatrix(dt,a),-10,'red');
         end

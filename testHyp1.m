@@ -3,7 +3,7 @@
 % them to adjust speed and frustration levels. cars honk at one another
 % to spread and relieve frustration. 
 
-minFollowingDistances = [9 11 13 15 17 19 21 23 25];
+minFollowingDistances = 1:maxFollowingDistance;
 
 avgSPEED = [];
 avgVARIANCE = [];
@@ -14,8 +14,8 @@ for ind=1:length(minFollowingDistances)
     avgVariance = [];
     
     for runs=1:50
-        clearvars -except avgSpeed avgVariance infinitespeed ...
-            minFollowingDistances avgSPEED avgVARIANCE ind
+        clearvars -except avgSpeed avgVariance ...
+            minFollowingDistances avgSPEED avgVARIANCE ind runs
         % simulation constants
         dt = 0.1;
         % simulation length
@@ -225,9 +225,9 @@ hold off;
 
 figure;
 hold on;
-plot(minFollowingDistances,avgVARIANCE);
+plot(minFollowingDistances,avgVARIANCE,'r');
 title('Average variance in speed by minimum following distance');
 ylabel('Average variance in speed');
 xlabel('Minimum following distance (km)');
-ylim([0 100]);
+ylim([0 200]);
 hold off;
