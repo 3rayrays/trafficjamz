@@ -1,7 +1,7 @@
-%% model of multiple cars on a multiple-lane road
-% each car has a desired speed, and responds to the circumstances around
-% them to adjust speed and frustration levels. cars honk at one another
-% to spread and relieve frustration. 
+%% Kai Matheson
+% testing hypothesis 4: The addition of honking increases average 
+% frustration levels in comparison with the no-honking model.
+
 
 
 avgfrustrationRunHonking= [];

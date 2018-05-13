@@ -1,15 +1,19 @@
-%% model of multiple cars on a multiple-lane road
-% each car has a desired speed, and responds to the circumstances around
-% them to adjust speed and frustration levels. cars honk at one another
-% to spread and relieve frustration. 
+%% Kai Matheson
+% testing hypothesis 1: Average speed of cars does not change with changes
+% in minFollowingDistance, but average individual variation in speed does. 
 
+% vary minFollowingDistances
 minFollowingDistances = 1:maxFollowingDistance;
 
+% these vectors will hold values for average speed and variance at diff
+% values of minFollowingDistances
 avgSPEED = [];
 avgVARIANCE = [];
 
 for ind=1:length(minFollowingDistances)
     
+    % these vectors will hold values for average speed and average var
+    % in each individual run of the simulation
     avgSpeed= [];
     avgVariance = [];
     
@@ -185,28 +189,23 @@ for ind=1:length(minFollowingDistances)
                 end
             end
         end
-        
-        % transform data
-        % create matrices where each row is information for a particular car and
-        % each column corresponds to a particular timestep. this information will
-        % be used in visualizing the simulation
-        
-        posnmatrix = []; % matrix of positions
-        lanematrix = []; % matrix of lanes
-        honkmatrix = []; % matrix of honking status
-        
+       
+        % these vectors will hold the average speed of each car in one 
+        % run of the simulation
         avgspeed = [];
         variancespeed = [];
         for i=1:index
             avgspeed = [avgspeed, mean(real(car(i).speed(car(i).speed<Inf)))];
             variancespeed = [variancespeed,var(real(car(i).speed(car(i).speed<Inf)))];
         end
-        
+        % calculate the average speed for the entire simulation and add it
+        % to avgSpeed vector. the same for avgVariance.
         avgSpeed(end+1) = real(mean(real(avgspeed(avgspeed<Inf))));
         avgVariance(end+1) = real(mean(real(variancespeed(variancespeed<Inf))));
         
     end
     
+    % calculate average speed & variance of the 50 runs of the simulation
     avgSPEED(end+1) = mean(real(avgSpeed(avgSpeed<Inf)));
     avgVARIANCE(end+1) = mean(real(avgVariance(~isnan(avgVariance))));
 

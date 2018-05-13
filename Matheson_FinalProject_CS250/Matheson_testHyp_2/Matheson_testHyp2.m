@@ -1,7 +1,7 @@
-%% model of multiple cars on a multiple-lane road
-% each car has a desired speed, and responds to the circumstances around
-% them to adjust speed and frustration levels. cars honk at one another
-% to spread and relieve frustration. 
+%% Kai Matheson
+% testing hypothesis 2: All else equal, implementation of a “passing lane”
+% leads to a higher average speed. 
+
 
 numRuns = 200;
 avgSpeedNoPassingLane = [];

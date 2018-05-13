@@ -1,7 +1,6 @@
-%% model of multiple cars on a multiple-lane road
-% each car has a desired speed, and responds to the circumstances around
-% them to adjust speed and frustration levels. cars honk at one another
-% to spread and relieve frustration. 
+%% Kai Matheson
+% testing hypothesis 3: The relationship between number of lanes and
+% average following distance is logarithmic in shape.
 
 
 avgfrustrationRunHonking= [];
