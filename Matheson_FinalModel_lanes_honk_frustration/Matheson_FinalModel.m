@@ -1,7 +1,11 @@
-%% model of multiple cars on a multiple-lane road
+%% Kai Matheson
+%%% CS 250 Final Project
+
+%%% FINAL MODEL: multiple cars on a multiple-lane road
 % each car has a desired speed, and responds to the circumstances around
 % them to adjust speed and frustration levels. cars honk at one another
-% to spread and relieve frustration. 
+% to spread and relieve frustration. cars change lanes based on frustration
+% when going below their desired speed.
 
 %% simulation constants
 dt = 0.1;
@@ -99,7 +103,7 @@ for n=2:(numIterations+1)
         car(i).frustration(end+1) = ...
             (car(i).speed(end)<car(i).desiredSpeed) * ...
             car(i).frustration(end) + ...
-            (car(i).speed(end)>=car(i).desiredSpeed) * 1 ;
+            (car(i).speed(end)>=car(i).desiredSpeed) * baseFrustration ;
         % initialize current lane and current honk status to be the same 
         % as in the last timestep, then it will be possibly changed below
         car(i).lane(end+1) = car(i).lane(end);
@@ -166,10 +170,14 @@ for n=2:(numIterations+1)
             currentPositions = currentPositions(currentPositions(:,1)~=i,:);
         else 
             % else update their currentPosition, speed, accel, and lane
-            currentPositions(currentPositions(:,1)==i,2)=car(i).position(end);
-            currentPositions(currentPositions(:,1)==i,3)=car(i).speed(end);
-            currentPositions(currentPositions(:,1)==i,4)=car(i).acceleration;
-            currentPositions(currentPositions(:,1)==i,5)=car(i).lane(end);
+            currentPositions(currentPositions(:,1)==i,2)=...
+                car(i).position(end);
+            currentPositions(currentPositions(:,1)==i,3)=...
+                car(i).speed(end);
+            currentPositions(currentPositions(:,1)==i,4)=...
+                car(i).acceleration;
+            currentPositions(currentPositions(:,1)==i,5)=...
+                car(i).lane(end);
         end
     end
 end
@@ -187,9 +195,12 @@ for i=1:index
     times = car(i).time;
     starting = find(t==times(1));
     ending = find(t==times(end));
-    car(i).position = [-1*ones(1,starting-1), car(i).position, roadLength + ones(1,length(t) - ending)];
-    car(i).lane = [ones(1,starting-1), car(i).lane, ones(1,length(t)-ending)];
-    car(i).honk = [zeros(1,starting-1), car(i).honk, zeros(1,length(t)-ending)];
+    car(i).position = [-1*ones(1,starting-1), car(i).position, ...
+        roadLength + ones(1,length(t) - ending)];
+    car(i).lane = [ones(1,starting-1), car(i).lane, ...
+        ones(1,length(t)-ending)];
+    car(i).honk = [zeros(1,starting-1), car(i).honk, ...
+        zeros(1,length(t)-ending)];
     lanematrix = [lanematrix; car(i).lane];
     posnmatrix = [posnmatrix; car(i).position];
     honkmatrix = [honkmatrix; car(i).honk];
@@ -197,14 +208,15 @@ end
 
 %% visualize
 road = 0:1:roadLength;
-toproad(1:roadLength+1) = 3.5;
-midroad2(1:roadLength+1) = 2.5;
-midroad(1:roadLength+1) = 1.5;
-bottomroad(1:roadLength+1) = .5;
 
+toproad(1:roadLength+1) = 3.5;  %left barrier of road
+midroad2(1:roadLength+1) = 2.5; %divider between lanes
+midroad(1:roadLength+1) = 1.5;  %divider between lanes
+bottomroad(1:roadLength+1) = .5;%right barrier of road
+
+%possible car colors
 colors = {'yellow','magenta','cyan','blue','green','black'};
-%%
-%fig = figure('visible','off');
+%% iterate through frames to capture them in an indexed image
 fig = figure;
 for a = 1:length(posnmatrix(1,:))
     hold on;
@@ -217,9 +229,9 @@ for a = 1:length(posnmatrix(1,:))
         carposn(dt) = scatter(posnmatrix(dt,a), lanematrix(dt,a),20,...
             'filled','s','MarkerFaceColor',colors{carIndex},...
             'MarkerEdgeColor','black', 'LineWidth', 1);
-        carposn(dt) = scatter(posnmatrix(dt,a), lanematrix(dt,a),100,'filled','s','MarkerEdgeColor','black','MarkerFaceColor',colors{carIndex},'LineWidth',1.5);
         if honkmatrix(dt,a)==1
-            honk(dt) = scatter(posnmatrix(dt,a)+1,lanematrix(dt,a),10,'red','filled');
+            honk(dt) = scatter(posnmatrix(dt,a)+1,lanematrix(dt,a),10,...
+                'red','filled');
         else
             honk(dt) = scatter(posnmatrix(dt,a),-10,'red');
         end
@@ -240,19 +252,12 @@ for a = 1:length(posnmatrix(1,:))
 end
 close;
 
-filename = 'testAnimated.gif'; % Specify the output file name
+filename = 'Matheson_FinalModel.gif'; 
 for a = 1:length(posnmatrix(1,:))
     [A,map] = rgb2ind(im{a},256);
     if a == 1
         imwrite(A,map,filename,'gif','LoopCount',Inf,'DelayTime',.5);
     else
-        imwrite(A,map,filename,'gif','WriteMode','append','DelayTime',.05);
+        imwrite(A,map,filename,'gif','WriteMode','append','DelayTime',.1);
     end
-end
-
-
-%%
-realcarspeeds = 0;
-for i=1:length(car)
-    realcarspeeds = isreal(car(i).speed) + realcarspeeds;
 end
